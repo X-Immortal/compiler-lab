@@ -1,0 +1,215 @@
+plugins {
+    id 'java'
+    id 'antlr'
+    id 'application'
+}
+
+group = 'icu.cpl.compilers'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    antlrVersion = '4.9.1'
+    junitVersion = '5.10.2'
+    studentId = 'your student id'
+}
+
+dependencies {
+    antlr "org.antlr:antlr4:${antlrVersion}"
+    implementation "org.antlr:antlr4-runtime:${antlrVersion}"
+    testImplementation platform("org.junit:junit-bom:${junitVersion}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+def antlrGeneratedRoot = layout.buildDirectory.dir('generated-src/antlr/main')
+def antlrSourceRoot = file('src/main/antlr')
+
+sourceSets {
+    main {
+        java {
+            srcDir antlrGeneratedRoot
+        }
+    }
+}
+
+tasks.named('generateGrammarSource') {
+    enabled = false
+}
+
+def toTaskSegment = { String value ->
+    value
+        .split(/[\/\\\\]/)
+        .findAll { !it.isBlank() }
+        .collect { segment -> segment[0].toUpperCase() + segment.substring(1) }
+        .join('')
+}
+
+def generatedGrammarTasks = []
+
+fileTree(antlrSourceRoot) {
+    include '**/*Lexer.g4'
+}.files.sort().each { File lexerGrammar ->
+    def grammarDir = lexerGrammar.parentFile
+    def grammarName = lexerGrammar.name - 'Lexer.g4'
+    def parserGrammar = new File(grammarDir, "${grammarName}Parser.g4")
+    def relDir = antlrSourceRoot.toPath().relativize(grammarDir.toPath()).toString()
+    def taskSuffix = "${toTaskSegment(relDir)}${grammarName}"
+    def outputDirProvider = antlrGeneratedRoot.map { generatedRoot ->
+        relDir.isEmpty() ? generatedRoot.asFile : new File(generatedRoot.asFile, relDir)
+    }
+
+    def lexerTask = tasks.register("generate${taskSuffix}Lexer") {
+        group = 'build'
+        description = "Generate lexer sources for ${grammarName} from ${relDir ?: '.'}."
+        inputs.file(lexerGrammar)
+        outputs.dir(outputDirProvider)
+
+        doLast {
+            def targetDir = outputDirProvider.get()
+            mkdir(targetDir)
+
+            javaexec {
+                mainClass = 'org.antlr.v4.Tool'
+                classpath = configurations.antlr
+                args = [
+                    '-listener',
+                    '-visitor',
+                    '-long-messages',
+                    '-o', targetDir.absolutePath,
+                    lexerGrammar.absolutePath
+                ]
+            }
+        }
+    }
+
+    generatedGrammarTasks << lexerTask
+
+    if (parserGrammar.exists()) {
+        def parserTask = tasks.register("generate${taskSuffix}Parser") {
+            group = 'build'
+            description = "Generate parser sources for ${grammarName} from ${relDir ?: '.'}."
+            dependsOn lexerTask
+            inputs.files(lexerGrammar, parserGrammar)
+            outputs.dir(outputDirProvider)
+
+            doLast {
+                def targetDir = outputDirProvider.get()
+                mkdir(targetDir)
+
+                javaexec {
+                    mainClass = 'org.antlr.v4.Tool'
+                    classpath = configurations.antlr
+                    args = [
+                        '-listener',
+                        '-visitor',
+                        '-long-messages',
+                        '-lib', targetDir.absolutePath,
+                        '-o', targetDir.absolutePath,
+                        parserGrammar.absolutePath
+                    ]
+                }
+            }
+        }
+
+        generatedGrammarTasks << parserTask
+    }
+}
+
+def generateProjectGrammars = tasks.register('generateProjectGrammars') {
+    group = 'build'
+    description = 'Generate ANTLR sources with explicit lexer/parser ordering per grammar directory.'
+    dependsOn generatedGrammarTasks
+}
+
+compileJava {
+    dependsOn generateProjectGrammars
+    options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'Main'
+}
+
+tasks.named('run') {
+    dependsOn tasks.named('traceCompile')
+    if (project.hasProperty('appArgs')) {
+        args project.property('appArgs').toString().split(/\s+/).findAll { !it.isBlank() }
+    }
+}
+
+def gitTrace = { label ->
+    exec {
+        commandLine 'git', 'add', '.', '-A', '--ignore-errors'
+        ignoreExitValue = true
+    }
+    exec {
+        commandLine 'bash', '-lc', 'while (test -e .git/index.lock); do sleep 0.1; done'
+        ignoreExitValue = true
+    }
+    exec {
+        commandLine 'bash', '-lc', """
+            (
+              echo "> ${label}" && \
+              echo ${studentId} && \
+              id -un && \
+              uname -a && \
+              uptime && \
+              (head -c 20 /dev/urandom | hexdump -v -e '"%02x"') && \
+              echo
+            ) | git commit -F - -q --author='tracer-compiler2022 <compilers@software.nju.edu.cb>' --no-verify --allow-empty
+        """.stripIndent().trim()
+        ignoreExitValue = true
+    }
+    exec {
+        commandLine 'sync'
+        ignoreExitValue = true
+    }
+}
+
+def traceMakeCommit = tasks.register('traceMakeCommit') {
+    group = 'trace'
+    description = 'Record the make trace commit from the original Makefile.'
+    dependsOn generateProjectGrammars
+    doLast {
+        gitTrace('make')
+    }
+}
+
+tasks.named('compileJava') {
+    mustRunAfter traceMakeCommit
+}
+
+tasks.register('traceCompile') {
+    group = 'trace'
+    description = 'Mirror make compile: generate grammar, trace with label make, then compile classes.'
+    dependsOn traceMakeCommit
+    dependsOn tasks.named('classes')
+}
+
+def traceTestCommit = tasks.register('traceTestCommit') {
+    group = 'trace'
+    description = 'Record the test trace commit from the original Makefile.'
+    dependsOn tasks.named('traceCompile')
+    doLast {
+        gitTrace('test')
+    }
+}
+
+tasks.named('test') {
+    dependsOn traceTestCommit
+    useJUnitPlatform()
+}
