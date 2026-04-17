@@ -1,0 +1,29 @@
+int base(int x) {
+  return x + 1;
+}
+
+int keep(int a, int a, int b[]) {
+  int t = a;
+  return t + b[0];
+}
+
+int base(int y) {
+  missing = y;
+  return y;
+}
+
+int main() {
+  int arr[2] = {1, 2};
+  int mat[2][2] = {{1, 2}, {3, 4}};
+  int row[3] = {5, 6, 7};
+  int v = base(keep(3, arr));
+  v = arr + missing2;
+  mat[0] = row;
+  v = mat + 1;
+  mat[0][1] = row;
+  {
+    int base = 0;
+    v = base(v);
+  }
+  return v;
+}

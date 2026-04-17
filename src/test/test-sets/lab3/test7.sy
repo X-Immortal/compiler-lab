@@ -1,0 +1,29 @@
+int inc(int x) {
+  return x + 1;
+}
+
+int sumRow(int row[]) {
+  int i = 0;
+  int total = 0;
+  while (i < 3) {
+    total = total + row[i];
+    i = inc(i);
+  }
+  return total;
+}
+
+int main() {
+  int inc = 2;
+  int matrix[2][3] = {{1, 2, 3}, {4, 5, 6}};
+  int other[4] = {7, 8, 9, 10};
+  int total = 0;
+  {
+    int shadow = inc;
+    if (shadow) {
+      matrix[0] = other;
+      total = sumRow(matrix[0]);
+    }
+  }
+  total = total + sumRow(matrix[1]);
+  return total + inc;
+}

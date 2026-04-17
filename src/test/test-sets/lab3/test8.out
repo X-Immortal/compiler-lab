@@ -1,0 +1,6 @@
+Error type 3 at Line 5: Redefined variable: a.
+Error type 4 at Line 10: Redefined function: base.
+Error type 6 at Line 20: + mismatched for operands.
+Error type 6 at Line 22: + mismatched for operands.
+Error type 5 at Line 23: = mismatched for assignment.
+Error type 10 at Line 26: Not a function: base.
