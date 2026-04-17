@@ -39,7 +39,7 @@ public class TypeCheckerTest {
       TypeChecker.check(args);
       List<String> expected = stream.collect(Collectors.toList());
       List<String> actual = buf.toString().lines().collect(Collectors.toList());
-      Assertions.assertIterableEquals(expected, actual);
+      Assertions.assertEquals(expected, actual);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -83,7 +83,7 @@ public class TypeCheckerTest {
         }
       });
 
-      Assertions.assertIterableEquals(expectedSameSet, actualSameSet);
+      Assertions.assertEquals(expectedSameSet, actualSameSet);
       Assertions.assertTrue(Multisets.containsOccurrences(expectedAnySet, actualAnySet));
     } catch (IOException e) {
       throw new RuntimeException(e);

@@ -3,6 +3,7 @@ int base(int x) {
 }
 
 int keep(int a, int a, int b[]) {
+  int a = 0;
   int t = a;
   return t + b[0];
 }

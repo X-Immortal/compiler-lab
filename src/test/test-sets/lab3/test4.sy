@@ -19,3 +19,22 @@ int main() {
     a = 1;
     return a;
 }
+
+int clash;
+int clash() {
+    return 0;
+}
+
+int bar() {
+    return 1;
+}
+
+int bar;
+
+int needInt() {
+    return;
+}
+
+void needVoid() {
+    return 1;
+}

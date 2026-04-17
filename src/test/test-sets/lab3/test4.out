@@ -9,3 +9,7 @@ Error type 9 at Line 17: Not an array: test1.
 Error type 10 at Line 18: Not a function: test1.
 Error type 11 at Line 19: The left-hand side of an assignment must be a variable.
 Error type 7 at Line 20: type.Type mismatched for return.
+Error type 4 at Line 24: Redefined function: clash.
+Error type 3 at Line 32: Redefined variable: bar.
+Error type 7 at Line 35: return mismatched for return.
+Error type 7 at Line 39: return mismatched for return.
