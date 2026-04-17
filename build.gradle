@@ -21,7 +21,7 @@ ext {
     antlrVersion = '4.9.1'
     junitVersion = '5.10.2'
     guavaVersion = '33.4.3-jre'
-    studentId = '241250027'
+    studentId = '24xxxxxxx'
 }
 
 dependencies {

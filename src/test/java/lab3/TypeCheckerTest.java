@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -53,12 +55,14 @@ public class TypeCheckerTest {
           .map(this::extract)
           .collect(Collectors.groupingBy(pair -> pair.b));
       Multiset<Pair<Integer, Integer>> expectedSameSet = HashMultiset.create();
+      Set<Integer> anySetLines = new HashSet<>();
       Multiset<Pair<Integer, Integer>> expectedAnySet = HashMultiset.create();
       expected.forEach((lineNo, list) -> {
         Map<Integer, List<Pair<Integer, Integer>>> types =
             list.stream()
                 .collect(Collectors.groupingBy(pair -> pair.a));
         if (types.size() > 1) {
+          anySetLines.add(lineNo);
           expectedAnySet.addAll(list);
         } else {
           expectedSameSet.addAll(list);
@@ -72,10 +76,7 @@ public class TypeCheckerTest {
       Multiset<Pair<Integer, Integer>> actualSameSet = HashMultiset.create();
       Multiset<Pair<Integer, Integer>> actualAnySet = HashMultiset.create();
       actual.forEach((lineNo, list) -> {
-        Map<Integer, List<Pair<Integer, Integer>>> types =
-            list.stream()
-                .collect(Collectors.groupingBy(pair -> pair.a));
-        if (types.size() > 1) {
+        if (anySetLines.contains(lineNo)) {
           actualAnySet.addAll(list);
         } else {
           actualSameSet.addAll(list);
@@ -150,6 +151,30 @@ public class TypeCheckerTest {
   public void test8() {
     testError("./src/test/test-sets/lab3/test8.sy",
         "./src/test/test-sets/lab3/test8.out");
+  }
+
+  @Test
+  public void test9() {
+    testError("./src/test/test-sets/lab3/test9.sy",
+        "./src/test/test-sets/lab3/test9.out");
+  }
+
+  @Test
+  public void test10() {
+    testError("./src/test/test-sets/lab3/test10.sy",
+        "./src/test/test-sets/lab3/test10.out");
+  }
+
+  @Test
+  public void test11() {
+    testNormal("./src/test/test-sets/lab3/test11.sy",
+        "./src/test/test-sets/lab3/test11.out");
+  }
+
+  @Test
+  public void test12() {
+    testNormal("./src/test/test-sets/lab3/test12.sy",
+        "./src/test/test-sets/lab3/test12.out");
   }
 
 

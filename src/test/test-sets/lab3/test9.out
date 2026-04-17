@@ -1,0 +1,7 @@
+Error type 1 at Line 12: Undefined variable: unknown1.
+Error type 10 at Line 13: Not a function: id.
+Error type 1 at Line 13: Undefined variable: unknown2.
+Error type 1 at Line 14: Undefined variable: unknown3.
+Error type 2 at Line 15: Undefined function: missingFunc.
+Error type 2 at Line 16: Undefined function: missingRet.
+Error type 1 at Line 16: Undefined variable: unknown4.

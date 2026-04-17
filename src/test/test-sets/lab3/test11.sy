@@ -1,0 +1,43 @@
+const int bias = 1;
+
+int step(int x) {
+  return x + 1;
+}
+
+int fold(int row[]) {
+  int i = 0;
+  int sum = 0;
+  while (i < 3 && sum + 1) {
+    sum = sum + row[i];
+    i = step(i);
+  }
+  return sum;
+}
+
+void fill(int dst[], int seed) {
+  int i = 0;
+  while (i < 3) {
+    dst[i] = seed + i;
+    i = i + 1;
+  }
+  return;
+}
+
+int main() {
+  int step = 2;
+  int board[2][3] = {{1, 2, 3}, {4, 5, 6}};
+  int temp[4] = {0, 0, 0, 0};
+  int total = 0;
+  const int gate = 1;
+  fill(temp, step + bias);
+  {
+    int inner = step;
+    if (inner < temp[1] && gate || total) {
+      board[0] = temp;
+      total = fold(board[0]);
+    } else {
+      total = fold(board[1]);
+    }
+  }
+  return total + fold(board[1]);
+}

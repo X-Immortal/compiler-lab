@@ -1,0 +1,17 @@
+int id(int x) {
+  return x;
+}
+
+int take(int a, int b[]) {
+  return a + b[0];
+}
+
+int main() {
+  int data[2] = {1, 2};
+  int id = 3;
+  int a = unknown1 + 1;
+  int b = id(unknown2);
+  int c = take(unknown3, data);
+  int d = missingFunc(data[0]);
+  return missingRet(unknown4);
+}
