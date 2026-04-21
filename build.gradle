@@ -15,10 +15,12 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url = uri('https://jitpack.io') }
 }
 
 ext {
     antlrVersion = '4.9.1'
+    llvm4jVersion = '0.1.2-SNAPSHOT'
     junitVersion = '5.10.2'
     guavaVersion = '33.4.3-jre'
     studentId = '24xxxxxxx'
@@ -27,6 +29,7 @@ ext {
 dependencies {
     antlr "org.antlr:antlr4:${antlrVersion}"
     implementation "org.antlr:antlr4-runtime:${antlrVersion}"
+    implementation "com.github.chaos-warzh:llvm4j:${llvm4jVersion}"
     implementation "com.google.guava:guava:${guavaVersion}"
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation 'org.junit.jupiter:junit-jupiter'
