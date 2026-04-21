@@ -66,9 +66,9 @@ cp -r ~/codes/compilers/Lab/.git ./
 - 第 1 行：`STUID = 你的学号`
 - 第 2 行：`STUNAME = 你的姓名`
 
-当前框架额外还需要改 [build.gradle](/home/immortal/codes/compilers/lab-share/build.gradle:24)：
+当前框架额外还需要改 [build.gradle](/home/immortal/codes/compilers/lab-share/build.gradle:26)：
 
-- 第 24 行：`studentId = '你的学号'`
+- 第 26 行：`studentId = '你的学号'`
 
 因为 git trace 会读取这些配置。`make` 路径下用的是 `Makefile.git` 里的学号，Gradle 路径下用的是 `build.gradle` 里的 `studentId`；如果你要同时使用两套流程，这两处都要同步。
 
