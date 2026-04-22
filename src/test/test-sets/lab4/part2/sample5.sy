@@ -1,0 +1,9 @@
+const int seed = 0xA;
+int total = 1;
+int main() {
+    int a = seed + total;
+    int b = a;
+    b = b % 4 + 07;
+    total = b * 2;
+    return total + a;
+}

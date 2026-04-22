@@ -1,0 +1,9 @@
+int base = 3;
+int offset;
+int main() {
+    const int scale = 5;
+    int x = 2, y = base + scale;
+    offset = y - x;
+    x = offset + scale;
+    return x + y;
+}

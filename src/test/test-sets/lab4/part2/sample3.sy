@@ -1,0 +1,8 @@
+int g = 4;
+const int c = 6;
+int main() {
+    int a = g;
+    int b;
+    b = a * c + 010;
+    return b - g;
+}
