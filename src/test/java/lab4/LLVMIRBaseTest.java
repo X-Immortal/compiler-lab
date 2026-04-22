@@ -12,8 +12,10 @@ public class LLVMIRBaseTest {
   protected void test(String input, String output, String refer) {
     String[] args = {input, output};
     try {
+      Path outputPath = Path.of(output);
+      Files.deleteIfExists(outputPath);
       LLVMIRHelper.handle(args);
-      Assertions.assertTrue(Files.exists(Path.of(output)), "Failed to generate llvm-ir output file.");
+      Assertions.assertTrue(Files.exists(outputPath), "Failed to generate llvm-ir output file.");
       Pair<Integer, String> expected = runLLVM(refer);
       Pair<Integer, String> actual = runLLVM(output);
       Assertions.assertTrue(expected.b.isEmpty(),
