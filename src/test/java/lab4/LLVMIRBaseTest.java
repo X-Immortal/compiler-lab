@@ -29,7 +29,7 @@ public class LLVMIRBaseTest {
 
   private Pair<Integer, String> runLLVM(String path) throws IOException, InterruptedException {
     Process process = new ProcessBuilder("lli", path).start();
-    return new Pair<>(process.waitFor(), new String(process.getInputStream().readAllBytes()));
+    return new Pair<>(process.waitFor(), new String(process.getErrorStream().readAllBytes()));
   }
 
   @BeforeEach
