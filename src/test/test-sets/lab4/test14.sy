@@ -1,0 +1,29 @@
+int hits = 0;
+
+int scan(int limit) {
+    int i = 0;
+    int total = 0;
+    while (i < limit) {
+        int j = 0;
+        while (j < limit) {
+            j = j + 1;
+            if ((i + j) % 2 == 0) {
+                hits = hits + 1;
+                continue;
+            }
+            if (j == limit) {
+                break;
+            }
+            total = total + i + j;
+        }
+        if (i == limit - 1 && total > 5) {
+            return total + hits;
+        }
+        i = i + 1;
+    }
+    return total;
+}
+
+int main() {
+    return scan(4);
+}

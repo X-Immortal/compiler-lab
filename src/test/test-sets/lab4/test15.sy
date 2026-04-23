@@ -1,0 +1,25 @@
+int mark = 0;
+
+void probe(int x) {
+    if (x)
+        if (x - 1)
+            mark = mark + 10;
+        else
+            mark = mark + 1;
+    else
+        ;
+    return;
+}
+
+int main() {
+    int i = 0;
+    while (i < 3) {
+        probe(i);
+        if (i == 0 || i == 2 && mark > 0)
+            mark = mark + i;
+        else
+            ;
+        i = i + 1;
+    }
+    return mark;
+}

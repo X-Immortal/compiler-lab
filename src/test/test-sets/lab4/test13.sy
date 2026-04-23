@@ -1,0 +1,31 @@
+int value = 7;
+int bonus = 1;
+
+int mix(int value) {
+    int result = value + bonus;
+    {
+        int bonus = result + 1;
+        {
+            int value = bonus + 2;
+            result = value + bonus;
+        }
+        result = result + bonus;
+    }
+    result = result + value;
+    return result + bonus;
+}
+
+void mutate() {
+    int value = 3;
+    {
+        int bonus = value + 4;
+        value = bonus + 1;
+    }
+    bonus = bonus + value;
+}
+
+int main() {
+    int value = 2;
+    mutate();
+    return mix(value) + value + bonus;
+}

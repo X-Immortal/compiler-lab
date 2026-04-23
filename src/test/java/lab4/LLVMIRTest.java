@@ -96,4 +96,39 @@ public class LLVMIRTest extends LLVMIRBaseTest {
         "src/test/output/lab4/test10.ll",
         "src/test/test-sets/lab4/test10.ll");
   }
+
+  @Test
+  public void test11() {
+    test("src/test/test-sets/lab4/test11.sy",
+        "src/test/output/lab4/test11.ll",
+        "src/test/test-sets/lab4/test11.ll");
+  }
+
+  @Test
+  public void test12() {
+    test("src/test/test-sets/lab4/test12.sy",
+        "src/test/output/lab4/test12.ll",
+        "src/test/test-sets/lab4/test12.ll");
+  }
+
+  @Test
+  public void test13() {
+    test("src/test/test-sets/lab4/test13.sy",
+        "src/test/output/lab4/test13.ll",
+        "src/test/test-sets/lab4/test13.ll");
+  }
+
+  @Test
+  public void test14() {
+    test("src/test/test-sets/lab4/test14.sy",
+        "src/test/output/lab4/test14.ll",
+        "src/test/test-sets/lab4/test14.ll");
+  }
+
+  @Test
+  public void test15() {
+    test("src/test/test-sets/lab4/test15.sy",
+        "src/test/output/lab4/test15.ll",
+        "src/test/test-sets/lab4/test15.ll");
+  }
 }

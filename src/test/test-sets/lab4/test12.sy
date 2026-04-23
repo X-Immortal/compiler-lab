@@ -1,0 +1,28 @@
+int state = 0;
+
+int tick() {
+    state = state + 1;
+    return state;
+}
+
+int main() {
+    int i = 0;
+    int sum = 0;
+    while (i < 3 && tick()) {
+        int j = 0;
+        while (j < 3) {
+            j = j + 1;
+            if (j == 2 && i == 1 || j == 2 && tick()) {
+                continue;
+            }
+            sum = sum + j;
+            if (j == 3 || i == 4 && tick()) {
+                if (i == 2 && j == 3) {
+                    break;
+                }
+            }
+        }
+        i = i + 1;
+    }
+    return sum + state;
+}
