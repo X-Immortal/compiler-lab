@@ -7,19 +7,21 @@ target triple = "x86_64-pc-linux-gnu"
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind uwtable willreturn
 define dso_local i32 @increment() local_unnamed_addr #0 {
-  %1 = load i32, i32* @counter, align 4, !tbaa !5
-  %2 = add nsw i32 %1, 1
-  store i32 %2, i32* @counter, align 4, !tbaa !5
-  ret i32 %2
+entry:
+  %0 = load i32, i32* @counter, align 4, !tbaa !5
+  %add = add nsw i32 %0, 1
+  store i32 %add, i32* @counter, align 4, !tbaa !5
+  ret i32 %add
 }
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind uwtable willreturn
 define dso_local i32 @main() local_unnamed_addr #0 {
-  %1 = load i32, i32* @counter, align 4, !tbaa !5
-  %2 = icmp eq i32 %1, -1
-  %3 = select i1 %2, i32 1, i32 11
-  store i32 %3, i32* @counter, align 4, !tbaa !5
-  ret i32 %3
+entry:
+  %0 = load i32, i32* @counter, align 4, !tbaa !5
+  %tobool.not = icmp eq i32 %0, -1
+  %storemerge = select i1 %tobool.not, i32 1, i32 11
+  store i32 %storemerge, i32* @counter, align 4, !tbaa !5
+  ret i32 %storemerge
 }
 
 attributes #0 = { mustprogress nofree norecurse nosync nounwind uwtable willreturn "frame-pointer"="none" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }

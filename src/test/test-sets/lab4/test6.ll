@@ -5,6 +5,7 @@ target triple = "x86_64-pc-linux-gnu"
 
 ; Function Attrs: mustprogress nofree norecurse nosync nounwind readnone uwtable willreturn
 define dso_local i32 @main() local_unnamed_addr #0 {
+entry:
   ret i32 -1
 }
 
