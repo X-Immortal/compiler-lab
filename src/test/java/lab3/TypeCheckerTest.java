@@ -38,8 +38,9 @@ public class TypeCheckerTest {
       String[] args = {inputPath};
       TypeChecker.check(args);
       List<String> expected = stream.collect(Collectors.toList());
-      List<String> actual = buf.toString().lines().collect(Collectors.toList());
-      Assertions.assertEquals(expected, actual);
+      String output = buf.toString();
+      List<String> actual = output.lines().collect(Collectors.toList());
+      Assertions.assertEquals(expected, actual, output);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -69,7 +70,9 @@ public class TypeCheckerTest {
         }
       });
 
-      Map<Integer, List<Pair<Integer, Integer>>> actual = buf.toString().lines()
+      String output = buf.toString();
+
+      Map<Integer, List<Pair<Integer, Integer>>> actual = output.lines()
           .map(this::prefixBeforeColon)
           .map(this::extract)
           .collect(Collectors.groupingBy(pair -> pair.b));
@@ -83,8 +86,8 @@ public class TypeCheckerTest {
         }
       });
 
-      Assertions.assertEquals(expectedSameSet, actualSameSet);
-      Assertions.assertTrue(Multisets.containsOccurrences(expectedAnySet, actualAnySet));
+      Assertions.assertEquals(expectedSameSet, actualSameSet, output);
+      Assertions.assertTrue(Multisets.containsOccurrences(expectedAnySet, actualAnySet), output);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

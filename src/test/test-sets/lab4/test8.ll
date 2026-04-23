@@ -3,53 +3,73 @@ source_filename = "module"
 
 define i32 @factorial(i32 %n) {
 entry:
-  %smax.cmp = icmp sgt i32 %n, 0
-  %smax = select i1 %smax.cmp, i32 %n, i32 0
-  %0 = add i32 %smax, 1
+  %n.addr = alloca i32
+  %result = alloca i32
+  %i = alloca i32
+  store i32 %n, i32* %n.addr
+  store i32 1, i32* %result
+  store i32 1, i32* %i
   br label %while.cond
 
-while.cond:                                       ; preds = %while.body, %entry
-  %result.0 = phi i32 [ 1, %entry ], [ %mul, %while.body ]
-  %i.0 = phi i32 [ 1, %entry ], [ %add, %while.body ]
-  %exitcond = icmp eq i32 %i.0, %0
-  br i1 %exitcond, label %while.end, label %while.body
+while.cond:                                       ; preds = %if.end, %entry
+  %0 = load i32, i32* %i
+  %1 = load i32, i32* %n.addr
+  %cmp = icmp sle i32 %0, %1
+  br i1 %cmp, label %while.body, label %while.end
 
 while.body:                                       ; preds = %while.cond
-  %mul = mul i32 %i.0, %result.0
-  %add = add i32 %i.0, 1
-  %exitcond8 = icmp eq i32 %add, 11
-  br i1 %exitcond8, label %while.end, label %while.cond
+  %2 = load i32, i32* %result
+  %3 = load i32, i32* %i
+  %mul = mul i32 %2, %3
+  store i32 %mul, i32* %result
+  %4 = load i32, i32* %i
+  %add = add i32 %4, 1
+  store i32 %add, i32* %i
+  %5 = load i32, i32* %i
+  %cmp1 = icmp sgt i32 %5, 10
+  br i1 %cmp1, label %if.then, label %if.end
 
-while.end:                                        ; preds = %while.body, %while.cond
-  %result.1 = phi i32 [ %mul, %while.body ], [ %result.0, %while.cond ]
-  ret i32 %result.1
+if.then:                                          ; preds = %while.body
+  br label %while.end
+
+if.end:                                           ; preds = %while.body
+  br label %while.cond
+
+while.end:                                        ; preds = %if.then, %while.cond
+  %6 = load i32, i32* %result
+  ret i32 %6
 }
 
 define i32 @main() {
 entry:
-  br label %while.body
+  %retval = alloca i32
+  %limit = alloca i32
+  %sum = alloca i32
+  %j = alloca i32
+  store i32 0, i32* %retval
+  store i32 5, i32* %limit
+  store i32 0, i32* %sum
+  store i32 0, i32* %j
+  br label %while.cond
 
-while.body:                                       ; preds = %entry, %factorial.exit
-  %j.09 = phi i32 [ 0, %entry ], [ %0, %factorial.exit ]
-  %sum.08 = phi i32 [ 0, %entry ], [ %add, %factorial.exit ]
-  %0 = add i32 %j.09, 1
-  %exitcond.i10 = icmp eq i32 %j.09, 0
-  br i1 %exitcond.i10, label %factorial.exit, label %while.body.i
+while.cond:                                       ; preds = %while.body, %entry
+  %0 = load i32, i32* %j
+  %cmp = icmp slt i32 %0, 5
+  br i1 %cmp, label %while.body, label %while.end
 
-while.body.i:                                     ; preds = %while.body, %while.body.i
-  %i.0.i12 = phi i32 [ %add.i, %while.body.i ], [ 1, %while.body ]
-  %result.0.i11 = phi i32 [ %mul.i, %while.body.i ], [ 1, %while.body ]
-  %mul.i = mul i32 %i.0.i12, %result.0.i11
-  %add.i = add i32 %i.0.i12, 1
-  %exitcond.i = icmp eq i32 %i.0.i12, %j.09
-  br i1 %exitcond.i, label %factorial.exit, label %while.body.i
+while.body:                                       ; preds = %while.cond
+  %1 = load i32, i32* %sum
+  %2 = load i32, i32* %j
+  %call = call i32 @factorial(i32 %2)
+  %add = add i32 %1, %call
+  store i32 %add, i32* %sum
+  %3 = load i32, i32* %j
+  %add1 = add i32 %3, 1
+  store i32 %add1, i32* %j
+  br label %while.cond
 
-factorial.exit:                                   ; preds = %while.body.i, %while.body
-  %result.0.i.lcssa = phi i32 [ 1, %while.body ], [ %mul.i, %while.body.i ]
-  %add = add i32 %result.0.i.lcssa, %sum.08
-  %exitcond.not = icmp eq i32 %0, 5
-  br i1 %exitcond.not, label %while.end, label %while.body
-
-while.end:                                        ; preds = %factorial.exit
-  ret i32 %add
+while.end:                                        ; preds = %while.cond
+  %4 = load i32, i32* %sum
+  ret i32 %4
 }
+

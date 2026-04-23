@@ -29,8 +29,9 @@ public class SysYLexerTest {
       String[] args = {inputPath};
       SysYLexerHelper.lexicalAnalysis(args);
       List<String> expected = stream.collect(Collectors.toList());
-      List<String> actual = buf.toString().lines().collect(Collectors.toList());
-      Assertions.assertIterableEquals(expected, actual);
+      String output = buf.toString();
+      List<String> actual = output.lines().collect(Collectors.toList());
+      Assertions.assertIterableEquals(expected, actual, output);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -45,11 +46,12 @@ public class SysYLexerTest {
           stream
           .map(this::prefixBeforeColon)
           .collect(Collectors.toList());
+      String output = buf.toString();
       List<String> actual =
-          buf.toString().lines()
+          output.lines()
           .map(this::prefixBeforeColon)
           .collect(Collectors.toList());
-      Assertions.assertIterableEquals(expected, actual);
+      Assertions.assertIterableEquals(expected, actual, output);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

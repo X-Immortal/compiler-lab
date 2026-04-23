@@ -3,44 +3,92 @@ source_filename = "module"
 
 define i32 @main() {
 entry:
-  br label %while.cond1.preheader
+  %retval = alloca i32
+  %kMax = alloca i32
+  %result = alloca i32
+  %i = alloca i32
+  %j = alloca i32
+  %a = alloca i32
+  %b = alloca i32
+  store i32 0, i32* %retval
+  store i32 6, i32* %kMax
+  store i32 0, i32* %result
+  store i32 0, i32* %i
+  br label %while.cond
 
-while.cond1.preheader:                            ; preds = %entry, %while.end
-  %result.043 = phi i32 [ 0, %entry ], [ %result.1.ph.lcssa, %while.end ]
-  %i.040 = phi i32 [ 0, %entry ], [ %add10, %while.end ]
-  %0 = icmp ugt i32 %i.040, 4
-  br i1 %0, label %while.end, label %if.end.lr.ph
+while.cond:                                       ; preds = %while.end, %entry
+  %0 = load i32, i32* %i
+  %cmp = icmp slt i32 %0, 6
+  br i1 %cmp, label %while.body, label %while.end11
 
-if.end.lr.ph:                                     ; preds = %while.cond1.preheader, %if.end7
-  %result.1.ph38 = phi i32 [ %add8, %if.end7 ], [ %result.043, %while.cond1.preheader ]
-  %j.0.ph37 = phi i32 [ %add9, %if.end7 ], [ %i.040, %while.cond1.preheader ]
-  %smax.cmp = icmp sgt i32 %j.0.ph37, 4
-  %smax = select i1 %smax.cmp, i32 %j.0.ph37, i32 4
-  br label %if.end
+while.body:                                       ; preds = %while.cond
+  %1 = load i32, i32* %i
+  store i32 %1, i32* %j
+  br label %while.cond1
 
-if.end:                                           ; preds = %if.end.lr.ph, %if.then6
-  %j.035 = phi i32 [ %j.0.ph37, %if.end.lr.ph ], [ %add, %if.then6 ]
-  %1 = and i32 %j.035, 1
-  %cmp5 = icmp eq i32 %1, 0
+while.cond1:                                      ; preds = %if.end7, %if.then6, %while.body
+  %2 = load i32, i32* %j
+  %cmp2 = icmp slt i32 %2, 6
+  br i1 %cmp2, label %while.body3, label %while.end
+
+while.body3:                                      ; preds = %while.cond1
+  %3 = load i32, i32* %j
+  %cmp4 = icmp eq i32 %3, 5
+  br i1 %cmp4, label %if.then, label %if.end
+
+if.then:                                          ; preds = %while.body3
+  br label %while.end
+
+if.end:                                           ; preds = %while.body3
+  %4 = load i32, i32* %j
+  %rem = srem i32 %4, 2
+  %cmp5 = icmp eq i32 %rem, 0
   br i1 %cmp5, label %if.then6, label %if.end7
 
 if.then6:                                         ; preds = %if.end
-  %add = add i32 %j.035, 1
-  %exitcond = icmp eq i32 %j.035, %smax
-  br i1 %exitcond, label %while.end, label %if.end
+  %5 = load i32, i32* %j
+  %add = add i32 %5, 1
+  store i32 %add, i32* %j
+  br label %while.cond1
 
 if.end7:                                          ; preds = %if.end
-  %add8 = add i32 %result.1.ph38, 1
-  %add9 = add i32 %j.035, 1
-  %2 = icmp sgt i32 %j.035, 3
-  br i1 %2, label %while.end, label %if.end.lr.ph
+  %6 = load i32, i32* %result
+  %add8 = add i32 %6, 1
+  store i32 %add8, i32* %result
+  %7 = load i32, i32* %j
+  %add9 = add i32 %7, 1
+  store i32 %add9, i32* %j
+  br label %while.cond1
 
-while.end:                                        ; preds = %if.end7, %if.then6, %while.cond1.preheader
-  %result.1.ph.lcssa = phi i32 [ %result.043, %while.cond1.preheader ], [ %result.1.ph38, %if.then6 ], [ %add8, %if.end7 ]
-  %add10 = add i32 %i.040, 1
-  %exitcond47.not = icmp eq i32 %add10, 6
-  br i1 %exitcond47.not, label %cleanup, label %while.cond1.preheader
+while.end:                                        ; preds = %if.then, %while.cond1
+  %8 = load i32, i32* %i
+  %add10 = add i32 %8, 1
+  store i32 %add10, i32* %i
+  br label %while.cond
 
-cleanup:                                          ; preds = %while.end
-  ret i32 %result.1.ph.lcssa
+while.end11:                                      ; preds = %while.cond
+  store i32 0, i32* %a
+  store i32 1, i32* %b
+  %9 = load i32, i32* %a
+  %cmp12 = icmp ne i32 %9, 0
+  br i1 %cmp12, label %land.lhs.true, label %if.end15
+
+land.lhs.true:                                    ; preds = %while.end11
+  %10 = load i32, i32* %b
+  %cmp13 = icmp ne i32 %10, 0
+  br i1 %cmp13, label %if.then14, label %if.end15
+
+if.then14:                                        ; preds = %land.lhs.true
+  store i32 -65535, i32* %retval
+  br label %return
+
+if.end15:                                         ; preds = %land.lhs.true, %while.end11
+  %11 = load i32, i32* %result
+  store i32 %11, i32* %retval
+  br label %return
+
+return:                                           ; preds = %if.end15, %if.then14
+  %12 = load i32, i32* %retval
+  ret i32 %12
 }
+
